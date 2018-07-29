@@ -46,7 +46,7 @@ namespace Noobot.Serverless.Listener
 
         private void ConnectionOnOnDisconnect()
         {
-            throw new Exception("Slack Disconnect");
+
         }
 
         private async Task ConnectionOnOnMessageReceived(SlackMessage message)

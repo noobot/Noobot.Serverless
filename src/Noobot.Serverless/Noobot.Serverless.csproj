@@ -9,4 +9,8 @@
     <PackageReference Include="SlackConnector" Version="4.2.68-azurefunctions" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="MessagingPipeline\Request\" />
+  </ItemGroup>
+
 </Project>

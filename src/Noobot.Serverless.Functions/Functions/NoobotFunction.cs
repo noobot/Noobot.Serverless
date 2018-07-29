@@ -2,7 +2,6 @@
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Host;
 using Noobot.Serverless.Listener;
-using SlackConnector.Models;
 
 namespace Noobot.Serverless.Functions.Functions
 {
@@ -10,16 +9,22 @@ namespace Noobot.Serverless.Functions.Functions
     {
         [FunctionName("noobot-event")]
         public static async Task Run(
-            [NoobotTrigger]NoobotEvent noobotEvent,
+            [NoobotTrigger] NoobotEvent noobotEvent,
             TraceWriter log)
         {
-            await noobotEvent.SlackConnection.Say(new BotMessage
-            {
-                Text = noobotEvent.Message.Text,
-                ChatHub = noobotEvent.Message.ChatHub
-            });
+            var package = await noobotEvent
+                .UseConfiguration(() => new ExamplePipelineConfiguration());
 
-            log.Info($"{noobotEvent.Message.Text} : {noobotEvent.Message.Timestamp}");
+            await package.Execute();
         }
+
+        //await noobotEvent.SlackConnection.Say(new BotMessage
+        //{
+        //    Text = noobotEvent.Message.Text,
+        //    ChatHub = noobotEvent.Message.ChatHub
+        //});
+
+        //log.Info($"{noobotEvent.Message.Text} : {noobotEvent.Message.Timestamp}");
+        //}
     }
 }
