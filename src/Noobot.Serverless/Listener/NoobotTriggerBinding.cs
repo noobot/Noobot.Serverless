@@ -14,16 +14,16 @@ using SlackConnector.Models;
 
 namespace Noobot.Serverless.Listener
 {
-    public class SlackMessageTriggerBinding : ITriggerBinding
+    public class NoobotTriggerBinding : ITriggerBinding
     {
         private readonly Dictionary<string, Type> _bindingContract;
         private readonly string _functionName;
         private readonly ParameterInfo _parameter;
-        private SlackMessageExtentionConfig _listenersStore;
+        private NoobootExtensionConfig _listenersStore;
 
-        public SlackMessageTriggerBinding(
+        public NoobotTriggerBinding(
             ParameterInfo parameter,
-            SlackMessageExtentionConfig listenersStore,
+            NoobootExtensionConfig listenersStore,
             string functionName)
         {
             _parameter = parameter;
@@ -37,7 +37,7 @@ namespace Noobot.Serverless.Listener
 
         public Task<ITriggerData> BindAsync(object value, ValueBindingContext context)
         {
-            if (!(value is SlackMessage))
+            if (!(value is NoobotEvent))
             {
                 throw new Exception();
             }
@@ -57,8 +57,8 @@ namespace Noobot.Serverless.Listener
 
         public Task<IListener> CreateListenerAsync(ListenerFactoryContext context)
         {
-            var attribute = GetResolvedAttribute<SlackMessageTriggerAttribute>(_parameter);
-            return Task.FromResult<IListener>(new SlackMessageListener(context.Executor, attribute));
+            var attribute = GetResolvedAttribute<NoobotTriggerAttribute>(_parameter);
+            return Task.FromResult<IListener>(new NoobotListener(context.Executor, attribute));
         }
 
         public ParameterDescriptor ToParameterDescriptor()
@@ -68,14 +68,14 @@ namespace Noobot.Serverless.Listener
                 Name = _parameter.Name,
                 DisplayHints = new ParameterDisplayHints
                 {
-                    Prompt = "SlackMessage",
-                    Description = "SlackMessage trigger fired",
+                    Prompt = "NoobotEvent",
+                    Description = "NoobotEvent trigger fired",
                     DefaultValue = "Sample"
                 }
             };
         }
 
-        public Type TriggerValueType => typeof(SlackMessage);
+        public Type TriggerValueType => typeof(NoobotEvent);
 
         public IReadOnlyDictionary<string, Type> BindingDataContract => _bindingContract;
 

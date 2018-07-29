@@ -5,7 +5,7 @@ namespace Noobot.Serverless.Listener
 {
     [AttributeUsage(AttributeTargets.Parameter)]
     [Binding]
-    public sealed class SlackMessageTriggerAttribute : Attribute
+    public sealed class NoobotTriggerAttribute : Attribute
     {
     }
 }

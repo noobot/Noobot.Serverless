@@ -5,7 +5,7 @@ using Microsoft.Azure.WebJobs.Host.Config;
 
 namespace Noobot.Serverless.Listener
 {
-    public class SlackMessageExtentionConfig : IExtensionConfigProvider
+    public class NoobootExtensionConfig : IExtensionConfigProvider
     {
        // private TraceWriter _tracer;
 
@@ -23,7 +23,7 @@ namespace Noobot.Serverless.Listener
             //    throw new ArgumentNullException("context.Trace");
             //_tracer = context.Trace;
 
-            context.Config.RegisterBindingExtensions(new SlackMessageTriggerAttributeBindingProvider(this));
+            context.Config.RegisterBindingExtensions(new NoobotTriggerAttributeBindingProvider(this));
         }
     }
 }

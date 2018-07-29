@@ -9,15 +9,15 @@ using SlackConnector.Models;
 
 namespace Noobot.Serverless.Listener
 {
-    public class SlackMessageListener : IListener
+    public class NoobotListener : IListener
     {
         private ISlackConnection _connection;
-        private readonly SlackMessageTriggerAttribute _attribute;
+        private readonly NoobotTriggerAttribute _attribute;
         public ITriggeredFunctionExecutor Executor { get; }
 
-        public SlackMessageListener(
+        public NoobotListener(
             ITriggeredFunctionExecutor executor,
-            SlackMessageTriggerAttribute attribute)
+            NoobotTriggerAttribute attribute)
         {
             Executor = executor;
             _attribute = attribute;
@@ -53,7 +53,7 @@ namespace Noobot.Serverless.Listener
         {
             var triggerData = new TriggeredFunctionData
             {
-                TriggerValue = message
+                TriggerValue = new NoobotEvent(message, _connection)
             };
 
             await Executor.TryExecuteAsync(triggerData, CancellationToken.None);

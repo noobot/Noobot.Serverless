@@ -7,11 +7,11 @@ using SlackConnector.Models;
 
 namespace Noobot.Serverless.Listener
 {
-    public class SlackMessageTriggerAttributeBindingProvider : ITriggerBindingProvider
+    public class NoobotTriggerAttributeBindingProvider : ITriggerBindingProvider
     {
-        private readonly SlackMessageExtentionConfig _extensionConfigProvider;
+        private readonly NoobootExtensionConfig _extensionConfigProvider;
 
-        public SlackMessageTriggerAttributeBindingProvider(SlackMessageExtentionConfig extensionConfigProvider)
+        public NoobotTriggerAttributeBindingProvider(NoobootExtensionConfig extensionConfigProvider)
         {
             _extensionConfigProvider = extensionConfigProvider;
         }
@@ -24,7 +24,7 @@ namespace Noobot.Serverless.Listener
             }
 
             var parameter = context.Parameter;
-            var attribute = parameter.GetCustomAttribute<SlackMessageTriggerAttribute>(false);
+            var attribute = parameter.GetCustomAttribute<NoobotTriggerAttribute>(false);
             if (attribute == null)
             {
                 return Task.FromResult<ITriggerBinding>(null);
@@ -33,12 +33,12 @@ namespace Noobot.Serverless.Listener
             if (!IsSupportBindingType(parameter.ParameterType))
             {
                 throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture,
-                    "Can't bind SlackMessageTriggerAttribute to type '{0}'.", parameter.ParameterType));
+                    "Can't bind NoobotTriggerAttribute to type '{0}'.", parameter.ParameterType));
             }
 
             var contextParameter = context.Parameter;
             var functionName = context.Parameter.Member.Name;
-            var test = new SlackMessageTriggerBinding(
+            var test = new NoobotTriggerBinding(
                 contextParameter,
                 _extensionConfigProvider,
                 functionName);
@@ -48,7 +48,7 @@ namespace Noobot.Serverless.Listener
 
         public bool IsSupportBindingType(Type t)
         {
-            return t == typeof(SlackMessage) || t == typeof(string);
+            return t == typeof(NoobotEvent) || t == typeof(string);
         }
     }
 }
