@@ -6,7 +6,6 @@ using Microsoft.Azure.WebJobs.Host.Executors;
 using Microsoft.Azure.WebJobs.Host.Listeners;
 using SlackConnector;
 using SlackConnector.Models;
-using System.Configuration;
 
 namespace Noobot.Serverless.Listener
 {
@@ -16,7 +15,9 @@ namespace Noobot.Serverless.Listener
         private readonly SlackMessageTriggerAttribute _attribute;
         public ITriggeredFunctionExecutor Executor { get; }
 
-        public SlackMessageListener(ITriggeredFunctionExecutor executor, SlackMessageTriggerAttribute attribute)
+        public SlackMessageListener(
+            ITriggeredFunctionExecutor executor,
+            SlackMessageTriggerAttribute attribute)
         {
             Executor = executor;
             _attribute = attribute;
