@@ -6,6 +6,7 @@ using Microsoft.Azure.WebJobs.Host.Executors;
 using Microsoft.Azure.WebJobs.Host.Listeners;
 using SlackConnector;
 using SlackConnector.Models;
+using System.Configuration;
 
 namespace Noobot.Serverless.Listener
 {
@@ -20,7 +21,7 @@ namespace Noobot.Serverless.Listener
             Executor = executor;
             _attribute = attribute;
         }
-        
+
         public void Cancel() { }
 
         public void Dispose() { }
@@ -28,8 +29,9 @@ namespace Noobot.Serverless.Listener
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             var connector = new SlackConnector.SlackConnector();
-            var accessToken = AmbientConnectionStringProvider.Instance.GetConnectionString(_attribute.AccessToken);
-            _connection = await connector.Connect(accessToken);
+            var slackAccessToken = AmbientConnectionStringProvider.Instance.GetConnectionString("SlackAccessToken");
+
+            _connection = await connector.Connect(slackAccessToken);
             _connection.OnMessageReceived += ConnectionOnOnMessageReceived;
             _connection.OnDisconnect += ConnectionOnOnDisconnect;
         }

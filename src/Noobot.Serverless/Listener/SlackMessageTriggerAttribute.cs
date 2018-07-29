@@ -7,7 +7,5 @@ namespace Noobot.Serverless.Listener
     [Binding]
     public sealed class SlackMessageTriggerAttribute : Attribute
     {
-        /// <summary>Gets the name of the connection string to use.</summary>
-        public string AccessToken { get; set; } = "SlackBotUserAccessToken";
     }
 }
