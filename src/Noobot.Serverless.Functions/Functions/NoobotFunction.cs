@@ -2,29 +2,25 @@
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using Noobot.Serverless.Listener;
+using Noobot.Serverless.MessagingPipeline;
 
 namespace Noobot.Serverless.Functions.Functions
 {
-    public static class NoobotFunction
+    public class NoobotFunction
     {
+        private readonly INoobotPipeline _noobotPipeline;
+
+        public NoobotFunction(INoobotPipeline noobotPipeline)
+        {
+            _noobotPipeline = noobotPipeline;
+        }
+
         [FunctionName("noobot-event")]
-        public static async Task Run(
+        public async Task HandleNoobotEvent(
             [NoobotTrigger] NoobotEvent noobotEvent,
             ILogger log)
         {
-            var package = await noobotEvent
-                .UseConfiguration(() => new ExamplePipelineConfiguration());
-
-            await package.Execute();
+            await _noobotPipeline.Execute(noobotEvent, log);
         }
-
-        //await noobotEvent.SlackConnection.Say(new BotMessage
-        //{
-        //    Text = noobotEvent.Message.Text,
-        //    ChatHub = noobotEvent.Message.ChatHub
-        //});
-
-        //log.Info($"{noobotEvent.Message.Text} : {noobotEvent.Message.Timestamp}");
-        //}
     }
 }

@@ -1,13 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using Noobot.Serverless.MessagingPipeline.Request;
 using Noobot.Serverless.MessagingPipeline.Responders.ValidHandles;
+using Noobot.Serverless.MessagingPipeline.Response;
 
 namespace Noobot.Serverless.MessagingPipeline.Responders
 {
     public class HandlerMapping
     {
         /// <summary>
-        /// Valid handles to match on for incomming text, e.g. match exactly on "Hello"
+        /// Valid handles to match on for incoming text, e.g. match exactly on "Hello"
         /// </summary>
         public IValidHandle[] ValidHandles { get; set; } = new IValidHandle[0];
 
@@ -19,10 +21,10 @@ namespace Noobot.Serverless.MessagingPipeline.Responders
         /// <summary>
         /// The function that is evaluated on a matched handle
         /// </summary>
-        public Func<IncomingMessage, IValidHandle, HandlerResult> EvaluatorFunc { get; set; }
+        public Func<IncomingMessage, IValidHandle, IAsyncEnumerable<IResponseMessage>> EvaluatorFunc { get; set; }
 
         /// <summary>
-        /// Defaults to "False". If set to True then the pipeline isn't interupted if a match occurs here. This is good for logging.
+        /// Defaults to "False". If set to True then the pipeline isn't interrupted if a match occurs here.
         /// </summary>
         public bool ShouldContinueProcessing { get; set; }
 

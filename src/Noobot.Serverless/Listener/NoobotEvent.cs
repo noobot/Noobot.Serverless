@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Noobot.Serverless.MessagingPipeline;
 using Noobot.Serverless.MessagingPipeline.Request;
 using Noobot.Serverless.MessagingPipeline.Response;
 using SlackConnector;
@@ -11,41 +10,32 @@ namespace Noobot.Serverless.Listener
 {
     public class NoobotEvent
     {
-        public SlackMessage Message { get; }
+        private readonly SlackMessage _message;
         public ISlackConnection SlackConnection { get; }
 
         public NoobotEvent(
             SlackMessage message,
             ISlackConnection slackConnection)
         {
-            Message = message;
-            SlackConnection = slackConnection;
+            _message = message ?? throw new ArgumentNullException(nameof(message));
+            SlackConnection = slackConnection ?? throw new ArgumentNullException(nameof(slackConnection));
         }
 
-        public async Task<ChatPackage> UseConfiguration(Func<IPipelineConfiguration> configuration)
+        public async Task<IncomingMessage> Message()
         {
-            var responder = new NoobotResponder(SlackConnection);
-            var pipeline = configuration().GetPipeline(responder);
-
-            var incomingMessage = new IncomingMessage(
-                Message.User.Id,
-                GetUsername(Message),
-                await GetUserChannel(Message),
-                Message.User.Email,
-                Message.Text,
-                Message.Text,
-                GetTargetedText(Message),
-                Message.ChatHub.Id,
-                Message.ChatHub.Type == SlackChatHubType.DM ? ResponseType.DirectMessage : ResponseType.Channel,
-                Message.MentionsBot,
+            return new IncomingMessage(
+                _message.User.Id,
+                GetUsername(_message),
+                await GetUserChannel(_message),
+                _message.User.Email,
+                _message.Text,
+                _message.Text,
+                GetTargetedText(_message),
+                _message.ChatHub.Id,
+                _message.ChatHub.Type == SlackChatHubType.DM ? ResponseType.DirectMessage : ResponseType.Channel,
+                _message.MentionsBot,
                 SlackConnection.Self.Name,
                 SlackConnection.Self.Id
-            );
-
-            return new ChatPackage(
-                SlackConnection,
-                incomingMessage,
-                pipeline
             );
         }
 

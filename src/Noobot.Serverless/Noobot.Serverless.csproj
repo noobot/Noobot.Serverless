@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="3.0.1" />
-    <PackageReference Include="SlackConnector" Version="4.2.68-azurefunctions" />
+    <PackageReference Include="SlackConnector" Version="5.1.0" />
   </ItemGroup>
 
   <ItemGroup>

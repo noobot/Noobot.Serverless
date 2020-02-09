@@ -37,7 +37,7 @@ namespace Noobot.Serverless.MessagingPipeline.Request
         public string FullText { get; }
 
         /// <summary>
-        /// Contains the text minus any Bot targetting text (e.g. "@Noobot: {blah}" turns into "{blah}")
+        /// Contains the text minus any Bot targeting text (e.g. "@Noobot: {blah}" turns into "{blah}")
         /// </summary>
         public string TargetedText { get; }
 

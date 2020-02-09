@@ -2,7 +2,7 @@
 
 namespace Noobot.Serverless.MessagingPipeline.Response
 {
-    public class ResponseMessage
+    public class ResponseMessage : IResponseMessage
     {
         public string Text { get; }
         public string Channel { get; }
