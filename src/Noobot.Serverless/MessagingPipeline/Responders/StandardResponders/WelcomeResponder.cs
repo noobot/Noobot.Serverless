@@ -24,14 +24,17 @@ namespace Noobot.Serverless.MessagingPipeline.Responders.StandardResponders
             };
         }
 
-        private static async IAsyncEnumerable<ResponseMessage> HandleMessage(IncomingMessage message, IValidHandle matchedHandle)
+        private static async IAsyncEnumerable<IResponseMessage> HandleMessage(IncomingMessage message, IValidHandle matchedHandle)
         {
             yield return message.ReplyToChannel($"Hey @{message.Username}, how you doing?");
+
+            await Task.Delay(TimeSpan.FromSeconds(1));
+
+            yield return message.IndicateTypingOnDirectMessage();
 
             await Task.Delay(TimeSpan.FromSeconds(5));
 
             yield return message.ReplyDirectlyToUser("I know where you live...");
         }
-
     }
 }

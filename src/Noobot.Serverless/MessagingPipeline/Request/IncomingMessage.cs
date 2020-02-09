@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Noobot.Serverless.MessagingPipeline.Response;
 
 namespace Noobot.Serverless.MessagingPipeline.Request
@@ -121,6 +122,22 @@ namespace Noobot.Serverless.MessagingPipeline.Request
         public ResponseMessage ReplyDirectlyToUser(string text)
         {
             return ResponseMessage.DirectUserMessage(UserId, text);
+        }
+
+        /// <summary>
+        /// Will display on Slack that the bot is typing on the current channel. Good for letting the end users know the bot is doing something.
+        /// </summary>
+        public TypingIndicatorMessage IndicateTypingOnChannel()
+        {
+            return new TypingIndicatorMessage(Channel, string.Empty, ResponseType.Channel);
+        }
+
+        /// <summary>
+        /// Indicates on the DM channel that the bot is typing. Good for letting the end users know the bot is doing something.
+        /// </summary>
+        public TypingIndicatorMessage IndicateTypingOnDirectMessage()
+        {
+            return new TypingIndicatorMessage(UserChannel, UserId, ResponseType.DirectMessage);
         }
     }
 }

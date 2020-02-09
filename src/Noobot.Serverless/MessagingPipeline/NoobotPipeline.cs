@@ -12,6 +12,9 @@ using SlackConnector.Models;
 
 namespace Noobot.Serverless.MessagingPipeline
 {
+    /// <summary>
+    /// TODO: This class was a quick port from standalone Noobot. It needs a thorough cleaning
+    /// </summary>
     public class NoobotPipeline : INoobotPipeline
     {
         private readonly NoobotPipelineConfiguration _configuration;
@@ -140,22 +143,19 @@ namespace Noobot.Serverless.MessagingPipeline
         {
             SlackChatHub chatHub = null;
 
-            if (responseMessage.ResponseType == ResponseType.Channel)
+            switch (responseMessage.ResponseType)
             {
-                chatHub = new SlackChatHub { Id = responseMessage.Channel };
-            }
-            else if (responseMessage.ResponseType == ResponseType.DirectMessage)
-            {
-                if (string.IsNullOrEmpty(responseMessage.Channel))
-                {
+                case ResponseType.Channel:
+                    chatHub = new SlackChatHub { Id = responseMessage.Channel };
+                    break;
+                case ResponseType.DirectMessage when string.IsNullOrEmpty(responseMessage.Channel):
                     chatHub = await GetUserChatHub(
                         responseMessage.UserId,
                         slackConnection);
-                }
-                else
-                {
+                    break;
+                case ResponseType.DirectMessage:
                     chatHub = new SlackChatHub { Id = responseMessage.Channel };
-                }
+                    break;
             }
 
             return chatHub;
@@ -170,8 +170,10 @@ namespace Noobot.Serverless.MessagingPipeline
 
             if (slackConnection.UserCache.ContainsKey(userId))
             {
-                string username = "@" + slackConnection.UserCache[userId].Name;
-                chatHub = slackConnection.ConnectedDMs().FirstOrDefault(x => x.Name.Equals(username, StringComparison.OrdinalIgnoreCase));
+                var username = "@" + slackConnection.UserCache[userId].Name;
+                chatHub = slackConnection
+                    .ConnectedDMs()
+                    .FirstOrDefault(x => x.Name.Equals(username, StringComparison.OrdinalIgnoreCase));
             }
 
             if (chatHub == null && joinChannel)
@@ -186,22 +188,24 @@ namespace Noobot.Serverless.MessagingPipeline
         {
             var slackAttachments = new List<SlackAttachment>();
 
-            if (attachments != null)
+            if (attachments == null)
             {
-                foreach (var attachment in attachments)
+                return slackAttachments;
+            }
+
+            foreach (var attachment in attachments)
+            {
+                slackAttachments.Add(new SlackAttachment
                 {
-                    slackAttachments.Add(new SlackAttachment
-                    {
-                        Text = attachment.Text,
-                        Title = attachment.Title,
-                        Fallback = attachment.Fallback,
-                        ImageUrl = attachment.ImageUrl,
-                        ThumbUrl = attachment.ThumbUrl,
-                        AuthorName = attachment.AuthorName,
-                        ColorHex = attachment.Color,
-                        Fields = GetAttachmentFields(attachment)
-                    });
-                }
+                    Text = attachment.Text,
+                    Title = attachment.Title,
+                    Fallback = attachment.Fallback,
+                    ImageUrl = attachment.ImageUrl,
+                    ThumbUrl = attachment.ThumbUrl,
+                    AuthorName = attachment.AuthorName,
+                    ColorHex = attachment.Color,
+                    Fields = GetAttachmentFields(attachment)
+                });
             }
 
             return slackAttachments;
