@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Noobot.Serverless.MessagingPipeline;
 using Noobot.Serverless.MessagingPipeline.Request;
 using SlackConnector;
-using SlackConnector.Models;
 
 namespace Noobot.Serverless
 {

@@ -1,7 +1,5 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Azure.WebJobs.Host.Executors;
 using Microsoft.Azure.WebJobs.Host.Listeners;
 using SlackConnector;
@@ -30,7 +28,7 @@ namespace Noobot.Serverless.Listener
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             var connector = new SlackConnector.SlackConnector();
-            var slackAccessToken = AmbientConnectionStringProvider.Instance.GetConnectionString("SlackAccessToken");
+            var slackAccessToken = _attribute.SlackAccessToken;
 
             _connection = await connector.Connect(slackAccessToken);
             _connection.OnMessageReceived += ConnectionOnOnMessageReceived;

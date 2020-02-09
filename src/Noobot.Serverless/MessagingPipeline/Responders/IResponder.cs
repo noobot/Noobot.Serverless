@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
 using Noobot.Serverless.MessagingPipeline.Request;
-using Noobot.Serverless.MessagingPipeline.Responders;
-using Noobot.Serverless.MessagingPipeline.Response;
 
-namespace Noobot.Serverless.MessagingPipeline
+namespace Noobot.Serverless.MessagingPipeline.Responders
 {
     public interface IResponder
     {

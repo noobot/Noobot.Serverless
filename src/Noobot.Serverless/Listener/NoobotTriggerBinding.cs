@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Bindings;
 using Microsoft.Azure.WebJobs.Host.Bindings;
 using Microsoft.Azure.WebJobs.Host.Listeners;
 using Microsoft.Azure.WebJobs.Host.Protocols;
 using Microsoft.Azure.WebJobs.Host.Triggers;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using SlackConnector.Models;
 
 namespace Noobot.Serverless.Listener
 {
@@ -18,14 +17,17 @@ namespace Noobot.Serverless.Listener
     {
         private readonly Dictionary<string, Type> _bindingContract;
         private readonly string _functionName;
+        private readonly IConfiguration _configuration;
         private readonly ParameterInfo _parameter;
-        private NoobootExtensionConfig _listenersStore;
+        private NoobotExtensionConfig _listenersStore;
 
         public NoobotTriggerBinding(
+            IConfiguration configuration,
             ParameterInfo parameter,
-            NoobootExtensionConfig listenersStore,
+            NoobotExtensionConfig listenersStore,
             string functionName)
         {
+            _configuration = configuration;
             _parameter = parameter;
             _listenersStore = listenersStore;
             _functionName = functionName;
@@ -79,23 +81,34 @@ namespace Noobot.Serverless.Listener
 
         public IReadOnlyDictionary<string, Type> BindingDataContract => _bindingContract;
 
-        internal static TAttribute GetResolvedAttribute<TAttribute>(ParameterInfo parameter)
+        internal TAttribute GetResolvedAttribute<TAttribute>(ParameterInfo parameter)
             where TAttribute : Attribute
         {
             var attribute = parameter.GetCustomAttribute<TAttribute>(true);
 
-            var attributeConnectionProvider = attribute as IConnectionProvider;
-            if (attributeConnectionProvider != null && string.IsNullOrEmpty(attributeConnectionProvider.Connection))
+            if (attribute is NoobotTriggerAttribute trigger)
+            {
+                if (string.IsNullOrEmpty(trigger.SlackAccessToken))
+                {
+                    trigger.SlackAccessToken = _configuration.GetConnectionStringOrSetting("SlackAccessToken");
+                    return attribute;
+                }
+            }
+
+            if (attribute is IConnectionProvider attributeConnectionProvider && string.IsNullOrEmpty(attributeConnectionProvider.Connection))
             {
                 var connectionProviderAttribute =
                     attribute.GetType().GetCustomAttribute<ConnectionProviderAttribute>();
-                if (connectionProviderAttribute?.ProviderType != null)
+
+                if (connectionProviderAttribute?.ProviderType == null)
                 {
-                    var connectionOverrideProvider =
-                        GetHierarchicalAttributeOrNull(parameter, connectionProviderAttribute.ProviderType) as IConnectionProvider;
-                    if (connectionOverrideProvider != null &&
-                        !string.IsNullOrEmpty(connectionOverrideProvider.Connection))
-                        attributeConnectionProvider.Connection = connectionOverrideProvider.Connection;
+                    return attribute;
+                }
+
+                if (GetHierarchicalAttributeOrNull(parameter, connectionProviderAttribute.ProviderType) is IConnectionProvider connectionOverrideProvider
+                    && !string.IsNullOrEmpty(connectionOverrideProvider.Connection))
+                {
+                    attributeConnectionProvider.Connection = connectionOverrideProvider.Connection;
                 }
             }
 
@@ -133,14 +146,15 @@ namespace Noobot.Serverless.Listener
             return attribute;
         }
 
-        private class SlackMessageValueBinder : ValueBinder, IDisposable
+        private class SlackMessageValueBinder : IValueProvider, IDisposable
         {
             private readonly object _value;
             private List<IDisposable> _disposables;
 
-            public SlackMessageValueBinder(ParameterInfo parameter, object value,
+            public SlackMessageValueBinder(
+                ParameterInfo parameter,
+                object value,
                 List<IDisposable> disposables = null)
-                : base(parameter.ParameterType)
             {
                 _value = value;
                 _disposables = disposables;
@@ -158,16 +172,18 @@ namespace Noobot.Serverless.Listener
                 }
             }
 
-            public override Task<object> GetValueAsync()
+            public Task<object> GetValueAsync()
             {
                 return Task.FromResult(_value);
             }
 
-            public override string ToInvokeString()
+            public string ToInvokeString()
             {
                 // TODO: Customize your Dashboard invoke string
                 return $"{_value}";
             }
+
+            public Type Type { get; }
         }
 
         private class SlackMessageTriggerParameterDescriptor : TriggerParameterDescriptor

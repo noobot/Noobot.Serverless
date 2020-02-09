@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Noobot.Serverless.MessagingPipeline;
 using Noobot.Serverless.MessagingPipeline.Request;
 using Noobot.Serverless.MessagingPipeline.Response;
 using SlackConnector;

@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27703.2035
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29728.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Noobot.Serverless", "src\Noobot.Serverless\Noobot.Serverless.csproj", "{49FBD49B-FD39-48D1-9B9A-4E8377586E75}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Noobot.Serverless.Functions", "src\Noobot.Serverless.Functions\Noobot.Serverless.Functions.csproj", "{8E859F25-BC12-4725-81DA-0CE693CB1507}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Noobot.Serverless.Functions", "src\Noobot.Serverless.Functions\Noobot.Serverless.Functions.csproj", "{8E859F25-BC12-4725-81DA-0CE693CB1507}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

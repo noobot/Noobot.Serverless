@@ -1,7 +1,6 @@
-﻿using Noobot.Serverless.MessagingPipeline;
-using Noobot.Serverless.MessagingPipeline.Response;
+﻿using Noobot.Serverless.MessagingPipeline.Response;
 
-namespace Noobot.Serverless
+namespace Noobot.Serverless.MessagingPipeline
 {
     public interface IPipelineConfiguration
     {

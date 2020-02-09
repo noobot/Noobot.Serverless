@@ -3,17 +3,21 @@ using System.Globalization;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs.Host.Triggers;
-using SlackConnector.Models;
+using Microsoft.Extensions.Configuration;
 
 namespace Noobot.Serverless.Listener
 {
     public class NoobotTriggerAttributeBindingProvider : ITriggerBindingProvider
     {
-        private readonly NoobootExtensionConfig _extensionConfigProvider;
+        private readonly NoobotExtensionConfig _extensionConfigProvider;
+        private readonly IConfiguration _configuration;
 
-        public NoobotTriggerAttributeBindingProvider(NoobootExtensionConfig extensionConfigProvider)
+        public NoobotTriggerAttributeBindingProvider(
+            NoobotExtensionConfig extensionConfigProvider,
+            IConfiguration configuration)
         {
             _extensionConfigProvider = extensionConfigProvider;
+            _configuration = configuration;
         }
 
         public Task<ITriggerBinding> TryCreateAsync(TriggerBindingProviderContext context)
@@ -39,6 +43,7 @@ namespace Noobot.Serverless.Listener
             var contextParameter = context.Parameter;
             var functionName = context.Parameter.Member.Name;
             var test = new NoobotTriggerBinding(
+                _configuration,
                 contextParameter,
                 _extensionConfigProvider,
                 functionName);

@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Host;
+using Microsoft.Extensions.Logging;
 using Noobot.Serverless.Listener;
 
 namespace Noobot.Serverless.Functions.Functions
@@ -10,7 +10,7 @@ namespace Noobot.Serverless.Functions.Functions
         [FunctionName("noobot-event")]
         public static async Task Run(
             [NoobotTrigger] NoobotEvent noobotEvent,
-            TraceWriter log)
+            ILogger log)
         {
             var package = await noobotEvent
                 .UseConfiguration(() => new ExamplePipelineConfiguration());

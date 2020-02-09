@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Noobot.Serverless.MessagingPipeline.Request;
-using Noobot.Serverless.MessagingPipeline.Response;
 using SlackConnector;
 
-namespace Noobot.Serverless.Listener
+namespace Noobot.Serverless.MessagingPipeline.Response
 {
     public class NoobotResponder : INoobotResponder
     {
